@@ -44,3 +44,12 @@ Antes de começar, certifique-se de ter o seguinte instalado:
 1. Clone o repositório:
    ```bash
    git clone https://github.com/seu-usuario/seu-projeto.git
+
+
+## 📦 Criação do projeto
+
+1. Clone o repositório:
+   ```bash
+   dotnet new sln -n Dima
+   dotnet new classlib -o Dima.Core
+   dotnet sln add ./Dima.Core
