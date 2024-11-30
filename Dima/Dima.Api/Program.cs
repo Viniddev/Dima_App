@@ -9,6 +9,7 @@ builder.Services.AddEndpointsApiExplorer();
 //por parametro e que tem o mesmo nome
 
 builder.Services.AddSwaggerGen(x => x.CustomSchemaIds(n => n.FullName));
+builder.Services.AddTransient<Handler>();
 
 //--------------------------------------------------------------//
 
@@ -30,7 +31,7 @@ app.MapPost(
 app.MapPost(
     "/v1/teste",
     ([FromBody] Request request) => { new Response() { Resp = "resp" }; })
-    .WithName("/v1/transactions/create")
+    .WithName("/v1/transactions/testing")
     .WithSummary("Produces response by create transactions")
     .Produces<Response>();
 
