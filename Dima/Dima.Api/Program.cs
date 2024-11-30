@@ -1,6 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpointsApiExplorer();
+
+//essa config do "n.FullName" serve para que o nosso swagger não se confunda
+//quando estiver lidando com entidades ou classes que estejam sendo recebidas
+//por parametro e que tem o mesmo nome
+
+builder.Services.AddSwaggerGen(x => x.CustomSchemaIds(n => n.FullName));
+
+//--------------------------------------------------------------//
+
 var app = builder.Build();
 
 //request mapping
@@ -23,8 +34,12 @@ app.MapPost(
     .WithSummary("Produces response by create transactions")
     .Produces<Response>();
 
+
+app.UseSwagger();
+app.UseSwaggerUI();
 app.Run();
 
+//--------------------------------------------------------------//
 
 //request
 public record Request
