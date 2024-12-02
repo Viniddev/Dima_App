@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dima.Core.Enums
 {   
-    public enum ETransactionType
+    public enum ETransactionType : byte
     {
         Deposit = 0,
         WithDraw = 1

@@ -1,4 +1,6 @@
+using Dima.Api.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,11 @@ builder.Services.AddTransient<Handler>();
 
 //--------------------------------------------------------------//
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
+builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(connectionString));
+
+//--------------------------------------------------------------//
+
 var app = builder.Build();
 
 //request mapping
@@ -23,15 +30,15 @@ var app = builder.Build();
 
 app.MapPost(
     "/v1/transactions",
-    ([FromBody] Request request, Handler handler) => { handler.Handle(request); })
-    .WithName("/v1/transactions/create")
+    ([FromBody] Request request, Handler handler) => {  return handler.Handle(request); })
+    .WithName("/v1/transactions")
     .WithSummary("Produces response by create transactions")
     .Produces<Response>();
 
 app.MapPost(
     "/v1/teste",
-    ([FromBody] Request request) => { new Response() { Resp = "resp" }; })
-    .WithName("/v1/transactions/testing")
+     ([FromBody] Request request, Handler handler) => { return handler.Handle(request); })
+    .WithName("/v1/teste")
     .WithSummary("Produces response by create transactions")
     .Produces<Response>();
 
@@ -52,10 +59,11 @@ public record Request
     public long CategoryId { get; set; }
     public string UserId { get; set; } = string.Empty;
 }
-//response
 
+//response
 public record Response 
 {
+    public string Id { get; set; } = string.Empty;
     public string Resp { get; set; } = string.Empty;
 }
 
@@ -66,6 +74,7 @@ public class Handler
     {
         return new Response()
         {
+            Id = request.UserId,
             Resp = request.Title
         };
     }

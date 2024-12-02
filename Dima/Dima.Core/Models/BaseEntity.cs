@@ -10,8 +10,8 @@ namespace Dima.Core.Models
     public abstract class BaseEntity
     {
         public long Id { get; set; }
-        public DateTime DateCreation { get; set; } = DateTime.Now;
-        public DateTime? DateUpdate { get; set; } 
+        public DateTime CreationDate { get; set; } = DateTime.Now;
+        public DateTime? UpdateDate { get; set; } 
         public bool Active { get; set; } = true;
     }
 }
