@@ -1,4 +1,5 @@
 using Dima.Api.Data;
+using Dima.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,10 +24,10 @@ builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(connectionString
 var app = builder.Build();
 
 app.MapPost(
-    "/v1/transactions",
+    "/v1/categories",
     ([FromBody] Request request, Handler handler) => {  return handler.Handle(request); })
-    .WithName("/v1/transactions")
-    .WithSummary("Produces response by create transactions")
+    .WithName("/v1/categories")
+    .WithSummary("Create a new category")
     .Produces<Response>();
 
 app.MapPost(
@@ -51,6 +52,7 @@ public record Request
     public int Type { get; set; } = 1;
     public decimal Amount { get; set; }
     public long CategoryId { get; set; }
+    public string Description { get; set; } = string.Empty;
     public string UserId { get; set; } = string.Empty;
 }
 
@@ -62,10 +64,19 @@ public record Response
 }
 
 //handler
-public class Handler
+public class Handler(AppDbContext context)
 {
     public Response Handle(Request request) 
     {
+        var category = new Category() 
+        {
+            Title = request.Title,
+            Description = request.Description
+        };
+
+        context.Categories.Add(category);
+        context.SaveChanges();
+
         return new Response()
         {
             Id = request.UserId,
