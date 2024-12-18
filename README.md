@@ -9,7 +9,6 @@ Esse projeto está sendo desenvolvido durante o curso de desenvolvimento full st
 ## 📋 Índice
 
 - [Sobre o Projeto](#sobre-o-projeto)
-- [Funcionalidades](#funcionalidades)
 - [Pré-requisitos](#pré-requisitos)
 - [Instalação](#instalação)
 - [Como Usar](#como-usar)
@@ -23,27 +22,31 @@ Esse projeto está sendo desenvolvido durante o curso de desenvolvimento full st
 
 ## 🚀 Sobre o Projeto
 
-Descreva o propósito do projeto, o problema que ele resolve e para quem ele é destinado.
+Este é um projeto de controle financeiro que visa a organização e o display de como gerenciar as rendas e os gastos.
 
-## 🛠️ Funcionalidades
 
-- [x] Exemplo de funcionalidade 1
-- [x] Exemplo de funcionalidade 2
-- [ ] Exemplo de funcionalidade 3 (em desenvolvimento)
-
-## ✅ Pré-requisitos
+## 🛠Pré-requisitos
 
 Antes de começar, certifique-se de ter o seguinte instalado:
 
-- [.NET SDK 6.0+](https://dotnet.microsoft.com/download)
+- [.NET SDK 9](https://dotnet.microsoft.com/download)
 - [Git](https://git-scm.com/)
 - Editor de Código, como [Visual Studio Code](https://code.visualstudio.com/) ou [Visual Studio](https://visualstudio.microsoft.com/)
+- [Azure Data Studio](https://learn.microsoft.com/pt-br/azure-data-studio/download-azure-data-studio?tabs=win-install%2Cwin-user-install%2Credhat-install%2Cwindows-uninstall%2Credhat-uninstall)
+- [Docker](https://blog.balta.io/docker-instalacao-configuracao-e-primeiros-passos/)
+- [Sql Server Docker](https://blog.balta.io/sql-server-docker/)
+- [WSL](https://www.youtube.com/watch?v=o1_E4PBl30s)
 
 ## 📦 Instalação
 
 1. Clone o repositório:
    ```bash
    git clone https://github.com/seu-usuario/seu-projeto.git
+   
+2. Adicione os user-secrets:
+   ```bash
+   dotnet user-secrets init
+   dotnet user-secrets set "ConnectionStrings:DefaultConnection" "[your connection string]"
 
 
 ## 📦 Criação do projeto

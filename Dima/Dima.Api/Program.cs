@@ -22,12 +22,6 @@ builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(connectionString
 
 var app = builder.Build();
 
-//request mapping
-//get, post, put, delete
-
-//endpoint 
-//sao as urls para acesso
-
 app.MapPost(
     "/v1/transactions",
     ([FromBody] Request request, Handler handler) => {  return handler.Handle(request); })

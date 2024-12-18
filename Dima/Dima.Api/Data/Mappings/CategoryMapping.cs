@@ -21,7 +21,7 @@ namespace Dima.Api.Data.Mappings
 
             builder.Property(x => x.Active)
                .IsRequired(true)
-               .HasColumnType("BOOLEAN");
+               .HasColumnType("BIT");
 
             builder.Property(x=>x.Title)
                 .IsRequired(true)
