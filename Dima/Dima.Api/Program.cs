@@ -1,5 +1,9 @@
 using Dima.Api.Data;
+using Dima.Api.Handlers;
+using Dima.Core.Handlers;
 using Dima.Core.Models;
+using Dima.Core.Request.Categories;
+using Dima.Core.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +16,16 @@ builder.Services.AddEndpointsApiExplorer();
 //por parametro e que tem o mesmo nome
 
 builder.Services.AddSwaggerGen(x => x.CustomSchemaIds(n => n.FullName));
-builder.Services.AddTransient<Handler>();
+builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
+
+//transient ->
+//   sempre cria uma nova instancia do category independente de quantas vezes eu chame os metodos em uma mesma requisição
+
+//scoped ->
+//   sempre usa a mesma versão por requisição (que nem o addDbContext)
+
+//singleton ->
+//   so tem uma instancia por aplicação (possui o mesmo manipulador pra todas as requisicoes independente do usuario)
 
 //--------------------------------------------------------------//
 
@@ -25,62 +38,12 @@ var app = builder.Build();
 
 app.MapPost(
     "/v1/categories",
-    ([FromBody] Request request, Handler handler) => {  return handler.Handle(request); })
+    ([FromBody] CreateCategoryRequest request, CategoryHandler handler) => {  return handler.Handle(request); })
     .WithName("/v1/categories")
     .WithSummary("Create a new category")
-    .Produces<Response>();
-
-app.MapPost(
-    "/v1/teste",
-     ([FromBody] Request request, Handler handler) => { return handler.Handle(request); })
-    .WithName("/v1/teste")
-    .WithSummary("Produces response by create transactions")
-    .Produces<Response>();
+    .Produces<BaseResponse<Category>>();
 
 
 app.UseSwagger();
 app.UseSwaggerUI();
 app.Run();
-
-//--------------------------------------------------------------//
-
-//request
-public record Request
-{
-    public string Title { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public int Type { get; set; } = 1;
-    public decimal Amount { get; set; }
-    public long CategoryId { get; set; }
-    public string Description { get; set; } = string.Empty;
-    public string UserId { get; set; } = string.Empty;
-}
-
-//response
-public record Response 
-{
-    public string Id { get; set; } = string.Empty;
-    public string Resp { get; set; } = string.Empty;
-}
-
-//handler
-public class Handler(AppDbContext context)
-{
-    public Response Handle(Request request) 
-    {
-        var category = new Category() 
-        {
-            Title = request.Title,
-            Description = request.Description
-        };
-
-        context.Categories.Add(category);
-        context.SaveChanges();
-
-        return new Response()
-        {
-            Id = request.UserId,
-            Resp = request.Title
-        };
-    }
-}
