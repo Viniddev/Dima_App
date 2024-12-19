@@ -38,7 +38,7 @@ var app = builder.Build();
 
 app.MapPost(
     "/v1/categories",
-    ([FromBody] CreateCategoryRequest request, CategoryHandler handler) => {  return handler.Handle(request); })
+    ([FromBody] CreateCategoryRequest Request, ICategoryHandler Handler) => Handler.CreateCategoryAsync(Request))
     .WithName("/v1/categories")
     .WithSummary("Create a new category")
     .Produces<BaseResponse<Category>>();

@@ -28,7 +28,6 @@ namespace Dima.Api.Handlers
             catch (DbUpdateException ex) 
             {
                 //serilog
-                Console.WriteLine(ex);
                 throw;
             }
         }
