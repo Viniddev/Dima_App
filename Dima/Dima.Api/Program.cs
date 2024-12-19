@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddEndpointsApiExplorer();
 
 //essa config do "n.FullName" serve para que o nosso swagger não se confunda
