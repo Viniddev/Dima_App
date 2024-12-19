@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dima.Core.Request.Categories
+namespace Dima.Core.Request.GenericRequests
 {
-    public class GetCategoryByIdRequest : BaseRequest
+    public class GetEntityByIdRequest : BaseRequest
     {
         [Required(ErrorMessage = "Id must be valid")]
         public long Id { get; set; }

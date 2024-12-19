@@ -3,6 +3,7 @@ using Dima.Api.Handlers;
 using Dima.Core.Handlers;
 using Dima.Core.Models;
 using Dima.Core.Request.Categories;
+using Dima.Core.Request.GenericRequests;
 using Dima.Core.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -51,12 +52,12 @@ app.MapPut(
 
 app.MapPut(
     "/v1/deleteCategory",
-    ([FromBody] DeleteCategoryRequest Request, ICategoryHandler Handler) => Handler.DeleteCategoryAsync(Request))
+    ([FromBody] DeleteEntityRequest Request, ICategoryHandler Handler) => Handler.DeleteCategoryAsync(Request))
     .WithName("/v1/deleteCategory")
     .WithSummary("Delete category")
     .Produces<BaseResponse<Category>>();
 
-app.MapPost(
+app.MapPut(
     "/v1/getCategoryById",
     ([FromBody] long Request, ICategoryHandler Handler) => Handler.GetCategoryByIdAsync(Request))
     .WithName("/v1/categories")

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dima.Core.Request.Categories
+namespace Dima.Core.Request.GenericRequests
 {
-    public class GetAllCategoriesRequest : PagedRequest
+    public class GetAllEntitiesRequest : PagedRequest
     {
     }
 }

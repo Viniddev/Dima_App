@@ -1,102 +1,73 @@
-﻿using Azure.Core;
-using Dima.Api.Data;
+﻿using Dima.Api.Data;
 using Dima.Core.Handlers;
 using Dima.Core.Models;
 using Dima.Core.Request.Categories;
+using Dima.Core.Request.GenericRequests;
 using Dima.Core.Response;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dima.Api.Handlers
+namespace Dima.Api.Handlers;
+
+public class CategoryHandler : GenericHandler<Category>, ICategoryHandler
 {
-    public class CategoryHandler(AppDbContext context) : ICategoryHandler
+    public CategoryHandler(AppDbContext context) : base(context)
     {
-        public async Task<BaseResponse<Category>> CreateCategoryAsync(CreateCategoryRequest request)
+    }
+
+    public async Task<BaseResponse<Category>> CreateCategoryAsync(CreateCategoryRequest request)
+    {
+        try
         {
-            try
+            Category category = new()
             {
-                Category category = new()
-                {
-                    Title = request.Title,
-                    Description = request.Description,
-                    UserId = request.UserId,
-                };
+                Title = request.Title,
+                Description = request.Description,
+                UserId = request.UserId,
+            };
 
-                await context.Categories.AddAsync(category);
-                await context.SaveChangesAsync();
+            await _dbSet.AddAsync(category);
+            await _context.SaveChangesAsync();
 
-                return new BaseResponse<Category>(category);
-            }
-            catch (DbUpdateException ex) 
-            {
-                //serilog
-                throw;
-            }
+            return new BaseResponse<Category>(category);
         }
-
-        public async Task<BaseResponse<Category>> GetCategoryByIdAsync(long id)
+        catch (DbUpdateException ex)
         {
-            Category? categoria = await context.Categories.AsNoTracking().Where(x => x.Id == id && x.Active == true).FirstOrDefaultAsync();
-
-            if (categoria != null)
-            {
-                return new BaseResponse<Category>(categoria);
-            }
-            else
-            {
-                throw new NullReferenceException("Id not found");
-            }
-        }
-
-        public async Task<BaseResponse<Category>> DeleteCategoryAsync(DeleteCategoryRequest request)
-        {
-            Category? categoria = await context.Categories.AsNoTracking().Where(x => x.Id == request.Id && x.Active == true).FirstOrDefaultAsync();
-
-            if (categoria != null)
-            {
-                categoria.Active = false;
-                categoria.UpdateDate = DateTime.Now;
-
-                context.Categories.Update(categoria);
-                await context.SaveChangesAsync();
-
-                return new BaseResponse<Category>(categoria);
-            }
-            else 
-            {
-                throw new NullReferenceException("Id not found");
-            }
-        }
-
-        public async Task<BaseResponse<List<Category>>> GetAllCategoryAsync()
-        {
-            List<Category> listCategories = context.Categories.AsNoTracking().Where(x => x.Active == true).ToList();
-
-            return new BaseResponse<List<Category>>(listCategories);
-        }
-
-        public async Task<BaseResponse<Category>> UpdateCategoryAsync(UpdateCategoryRequest request)
-        {
-            Category? categoria = await context.Categories.AsNoTracking().Where(x => x.Id == request.Id && x.Active == true).FirstOrDefaultAsync();
-
-            if (categoria != null)
-            {
-                categoria.UpdateDate = DateTime.Now;
-
-                if (!string.IsNullOrEmpty(request.Description))
-                    categoria.Description = request.Description;
-
-                if(!string.IsNullOrEmpty(request.Title))
-                    categoria.Title = request.Title;
-
-                context.Categories.Update(categoria);
-                await context.SaveChangesAsync();
-
-                return new BaseResponse<Category>(categoria);
-            }
-            else
-            {
-                throw new NullReferenceException("Id not found");
-            }
+            //serilog
+            throw;
         }
     }
+
+    public async Task<BaseResponse<Category>> UpdateCategoryAsync(UpdateCategoryRequest request)
+    {
+        Category? categoria = await _dbSet.AsNoTracking().Where(x => x.Id == request.Id && x.Active == true).FirstOrDefaultAsync();
+
+        if (categoria != null)
+        {
+            categoria.UpdateValues();
+
+            if (!string.IsNullOrEmpty(request.Description))
+                categoria.Description = request.Description;
+
+            if (!string.IsNullOrEmpty(request.Title))
+                categoria.Title = request.Title;
+
+            _dbSet.Update(categoria);
+            await _context.SaveChangesAsync();
+
+            return new BaseResponse<Category>(categoria);
+        }
+        else
+        {
+            throw new NullReferenceException("Id not found");
+        }
+    }
+
+
+    //essa é uma forma utilizada pra consistir e manter o principio da segregação de interface (solid)
+    //mas no momento vou manter a implementação completa mesmo 
+
+    //public async Task<BaseResponse<Category>> DeleteAsync(DeleteEntityRequest request)
+    //{
+    //    return await DeleteCategoryAsync(request);
+    //}
 }

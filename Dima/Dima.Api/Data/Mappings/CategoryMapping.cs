@@ -4,25 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Dima.Api.Data.Mappings
 {
-    public class CategoryMapping : IEntityTypeConfiguration<Category>
+    public class CategoryMapping : BaseEntityConfig<Category>
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
+            base.Configure(builder);
+
             builder.ToTable("Category");
-            builder.HasKey(x => x.Id);
-
-            builder.Property(x => x.CreationDate)
-                .IsRequired(true)
-                .HasColumnType("DATETIME2");
-
-            builder.Property(x => x.UpdateDate)
-               .IsRequired(false)
-               .HasColumnType("DATETIME2");
-
-            builder.Property(x => x.Active)
-               .IsRequired(true)
-               .HasColumnType("BIT");
-
+           
             builder.Property(x=>x.Title)
                 .IsRequired(true)
                 .HasColumnType("NVARCHAR")

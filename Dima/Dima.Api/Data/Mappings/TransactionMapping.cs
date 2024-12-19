@@ -4,24 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Dima.Api.Data.Mappings
 {
-    public class TransactionMapping : IEntityTypeConfiguration<Transaction>
+    public class TransactionMapping : BaseEntityConfig<Transaction>
     {
         public void Configure(EntityTypeBuilder<Transaction> builder)
         {
+            base.Configure(builder);
+
             builder.ToTable("Transaction");
-            builder.HasKey(t => t.Id);
-
-            builder.Property(x => x.CreationDate)
-                .IsRequired(true)
-                .HasColumnType("DATETIME2");
-
-            builder.Property(x => x.UpdateDate)
-               .IsRequired(false)
-               .HasColumnType("DATETIME2");
-
-            builder.Property(x => x.Active)
-               .IsRequired(true)
-               .HasColumnType("BIT");
 
             builder.Property(x => x.Title)
                .IsRequired(true)
