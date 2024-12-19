@@ -36,12 +36,39 @@ builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(connectionString
 var app = builder.Build();
 
 app.MapPost(
-    "/v1/categories",
+    "/v1/createCategory",
     ([FromBody] CreateCategoryRequest Request, ICategoryHandler Handler) => Handler.CreateCategoryAsync(Request))
-    .WithName("/v1/categories")
+    .WithName("/v1/createCategory")
     .WithSummary("Create a new category")
     .Produces<BaseResponse<Category>>();
 
+app.MapPut(
+    "/v1/updateCategory",
+    ([FromBody] UpdateCategoryRequest Request, ICategoryHandler Handler) => Handler.UpdateCategoryAsync(Request))
+    .WithName("/v1/updateCategory")
+    .WithSummary("Update category")
+    .Produces<BaseResponse<Category>>();
+
+app.MapPut(
+    "/v1/deleteCategory",
+    ([FromBody] DeleteCategoryRequest Request, ICategoryHandler Handler) => Handler.DeleteCategoryAsync(Request))
+    .WithName("/v1/deleteCategory")
+    .WithSummary("Delete category")
+    .Produces<BaseResponse<Category>>();
+
+app.MapPost(
+    "/v1/getCategoryById",
+    ([FromBody] long Request, ICategoryHandler Handler) => Handler.GetCategoryByIdAsync(Request))
+    .WithName("/v1/categories")
+    .WithSummary("Get a category by id")
+    .Produces<BaseResponse<Category>>();
+
+app.MapGet(
+    "/v1/getAllCategories",
+    (ICategoryHandler Handler) => Handler.GetAllCategoryAsync())
+    .WithName("/v1/getAllCategories")
+    .WithSummary("Get all categories")
+    .Produces<BaseResponse<Category>>();
 
 app.UseSwagger();
 app.UseSwaggerUI();

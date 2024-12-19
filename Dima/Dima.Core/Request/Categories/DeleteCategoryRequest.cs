@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Dima.Core.Request.Categories
 {
-    public class DeleteCategoryRequest : BaseRequest
+    public class DeleteCategoryRequest
     {
         [Required(ErrorMessage = "Id must be valid")]
         public long Id { get; set; }

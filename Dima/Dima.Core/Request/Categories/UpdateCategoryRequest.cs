@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Dima.Core.Request.Categories
 {
-    public class UpdateCategoryRequest : BaseRequest
+    public class UpdateCategoryRequest
     {
         [Required(ErrorMessage = "Invalid Title")]
         [MaxLength(80, ErrorMessage = "Length not supported for title")]
@@ -15,5 +15,8 @@ namespace Dima.Core.Request.Categories
 
         [Required(ErrorMessage = "Invalid Description")]
         public string Description { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Id must be valid")]
+        public long Id { get; set; }
     }
 }
