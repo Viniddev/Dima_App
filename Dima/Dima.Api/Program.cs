@@ -16,8 +16,20 @@ builder.Services.AddEndpointsApiExplorer();
 //por parametro e que tem o mesmo nome
 
 builder.Services.AddSwaggerGen(x => x.CustomSchemaIds(n => n.FullName));
-builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
 
+// --> segundo o chat isso é util pra adicionar as controllers
+builder.Services.AddControllers(); 
+builder.Services.AddEndpointsApiExplorer();
+
+//isso aqui é pra documentar a api usando o xml
+builder.Services.AddSwaggerGen(options =>
+{
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
+});
+
+builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
 //transient ->
 //   sempre cria uma nova instancia do category independente de quantas vezes eu chame os metodos em uma mesma requisição
 
@@ -36,41 +48,9 @@ builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(connectionString
 
 var app = builder.Build();
 
-app.MapPost(
-    "/v1/createCategory",
-    ([FromBody] CreateCategoryRequest Request, ICategoryHandler Handler) => Handler.CreateCategoryAsync(Request))
-    .WithName("/v1/createCategory")
-    .WithSummary("Create a new category")
-    .Produces<BaseResponse<Category>>();
+//removi as minimal apis
 
-app.MapPut(
-    "/v1/updateCategory",
-    ([FromBody] UpdateCategoryRequest Request, ICategoryHandler Handler) => Handler.UpdateCategoryAsync(Request))
-    .WithName("/v1/updateCategory")
-    .WithSummary("Update category")
-    .Produces<BaseResponse<Category>>();
-
-app.MapPut(
-    "/v1/deleteCategory",
-    ([FromBody] DeleteEntityRequest Request, ICategoryHandler Handler) => Handler.DeleteCategoryAsync(Request))
-    .WithName("/v1/deleteCategory")
-    .WithSummary("Delete category")
-    .Produces<BaseResponse<Category>>();
-
-app.MapPut(
-    "/v1/getCategoryById",
-    ([FromBody] long Request, ICategoryHandler Handler) => Handler.GetCategoryByIdAsync(Request))
-    .WithName("/v1/categories")
-    .WithSummary("Get a category by id")
-    .Produces<BaseResponse<Category>>();
-
-app.MapGet(
-    "/v1/getAllCategories",
-    (ICategoryHandler Handler) => Handler.GetAllCategoryAsync())
-    .WithName("/v1/getAllCategories")
-    .WithSummary("Get all categories")
-    .Produces<BaseResponse<Category>>();
-
+app.MapControllers();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.Run();
