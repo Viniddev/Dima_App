@@ -6,6 +6,6 @@ namespace Dima.Core.Handlers;
 
 public interface ICategoryHandler : IGenericHandler<Category>
 {
-    Task<BaseResponse<Category>> CreateCategoryAsync(CreateCategoryRequest request);
-    Task<BaseResponse<Category>> UpdateCategoryAsync(UpdateCategoryRequest request);
+    Task<BaseResponse<Category?>> CreateCategoryAsync(CreateCategoryRequest request);
+    Task<BaseResponse<Category?>> UpdateCategoryAsync(UpdateCategoryRequest request);
 }

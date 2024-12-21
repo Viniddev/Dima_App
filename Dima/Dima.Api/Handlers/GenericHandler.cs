@@ -18,23 +18,23 @@ public class GenericHandler<T> : IGenericHandler<T> where T : BaseEntity
         _dbSet = _context.Set<T>();
     }
 
-    public async Task<BaseResponse<T>> GetCategoryByIdAsync(long id)
+    public async Task<BaseResponse<T?>> GetCategoryByIdAsync(long id)
     {
         var entity = await _dbSet.AsNoTracking().Where(x => x.Id == id && x.Active == true).FirstOrDefaultAsync();
 
         if (entity != null)
         {
-            return new BaseResponse<T>(entity);
+            return new BaseResponse<T?>(entity, "", 200);
         }
         else
         {
-            throw new NullReferenceException("Id not found");
+            return new BaseResponse<T?>(null, "category not found", 404);
         }
     }
 
-    public async Task<BaseResponse<T>> DeleteCategoryAsync(DeleteEntityRequest request)
+    public async Task<BaseResponse<T?>> DeleteCategoryAsync(DeleteEntityRequest request)
     {
-        var entity = await _dbSet.AsNoTracking().Where(x => x.Id == request.Id && x.Active == true).FirstOrDefaultAsync();
+        var entity = await _dbSet.Where(x => x.Id == request.Id && x.Active == true).FirstOrDefaultAsync();
 
         if (entity != null)
         {
@@ -43,18 +43,33 @@ public class GenericHandler<T> : IGenericHandler<T> where T : BaseEntity
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
 
-            return new BaseResponse<T>(entity);
+            return new BaseResponse<T?>(entity, "Successfully deleted", 200);
         }
         else
         {
-            throw new NullReferenceException("Id not found");
+            return new BaseResponse<T?>(null, "category not found", 404);
         }
     }
 
-    public async Task<BaseResponse<List<T>>> GetAllCategoryAsync()
+    public async Task<PagedResponse<List<T>>> GetAllCategoryAsync(GetAllEntitiesRequest Request)
     {
-        List<T> listEntity = _dbSet.AsNoTracking().Where(x => x.Active == true).ToList();
+        try 
+        {
+            IQueryable<T> query = _dbSet.AsNoTracking()
+                .Where(x => x.Active)
+                .OrderBy(x=>x.Id);
 
-        return new BaseResponse<List<T>>(listEntity);
+            List<T> listEntity = await query
+                .Skip((Request.PageNumber - 1) * Request.PageSize)
+                .Take(Request.PageSize)
+                .ToListAsync();
+
+            int total = await query.CountAsync();
+
+            return new PagedResponse<List<T>>(data:listEntity, totalCount: total, pageSize:Request.PageSize, currentPage: Request.PageNumber);
+        } catch (Exception) 
+        {
+            return new PagedResponse<List<T>>(null, 500, "Couldn't make the query");
+        }
     }
 }

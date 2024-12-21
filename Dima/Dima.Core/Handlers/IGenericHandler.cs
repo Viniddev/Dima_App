@@ -6,7 +6,7 @@ namespace Dima.Core.Handlers;
 
 public interface IGenericHandler<T>
 {
-    Task<BaseResponse<T>> DeleteCategoryAsync(DeleteEntityRequest request);
-    Task<BaseResponse<T>> GetCategoryByIdAsync(long id);
-    Task<BaseResponse<List<T>>> GetAllCategoryAsync();
+    Task<BaseResponse<T?>> DeleteCategoryAsync(DeleteEntityRequest request);
+    Task<BaseResponse<T?>> GetCategoryByIdAsync(long id);
+    Task<PagedResponse<List<T>>> GetAllCategoryAsync(GetAllEntitiesRequest request);
 }

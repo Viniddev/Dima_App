@@ -20,7 +20,7 @@ namespace Dima.Api.Controllers.V1
         [Route("/createCategory")]
         public async Task<IActionResult> CreateCategoryAsync([FromBody] CreateCategoryRequest Request) 
         {
-            BaseResponse<Category> retorno = await Handler.CreateCategoryAsync(Request);
+            BaseResponse<Category?> retorno = await Handler.CreateCategoryAsync(Request);
 
             if (retorno != null)
                 return Ok(retorno);
@@ -37,7 +37,7 @@ namespace Dima.Api.Controllers.V1
         [Route("/updateCategory")]
         public async Task<IActionResult> UpdateCategoryAsync([FromBody] UpdateCategoryRequest Request)
         {
-            BaseResponse<Category> retorno = await Handler.UpdateCategoryAsync(Request);
+            BaseResponse<Category?> retorno = await Handler.UpdateCategoryAsync(Request);
 
             if (retorno != null)
                 return Ok(retorno);
@@ -50,11 +50,11 @@ namespace Dima.Api.Controllers.V1
         /// </summary>
         /// <param name="Request">O objeto encapsula o id da categoria que queremos deletar </param>
         /// <returns>Retorna a categoria deletada ou um erro de execução.</returns>
-        [HttpPut]
+        [HttpDelete]
         [Route("/deleteCategory")]
         public async Task<IActionResult> DeleteCategory([FromBody] DeleteEntityRequest Request)
         {
-            BaseResponse<Category> retorno = await Handler.DeleteCategoryAsync(Request);
+            BaseResponse<Category?> retorno = await Handler.DeleteCategoryAsync(Request);
 
             if (retorno != null)
                 return Ok(retorno);
@@ -67,11 +67,11 @@ namespace Dima.Api.Controllers.V1
         /// </summary>
         /// <param name="Request"> Contém o id da categoria que desejamos.</param>
         /// <returns>Retorna a categoria desejada ou um erro de validação.</returns>
-        [HttpPut]
-        [Route("/getCategoryById")]
-        public async Task<IActionResult> GetCategoryByIdAsync([FromBody] long Request)
+        [HttpGet]
+        [Route("/getCategoryById/{Request}")]
+        public async Task<IActionResult> GetCategoryByIdAsync(long Request)
         {
-            BaseResponse<Category> retorno = await Handler.GetCategoryByIdAsync(Request);
+            BaseResponse<Category?> retorno = await Handler.GetCategoryByIdAsync(Request);
 
             if (retorno != null)
                 return Ok(retorno);
@@ -83,11 +83,11 @@ namespace Dima.Api.Controllers.V1
         /// Retorna todas as categorias criadas.
         /// </summary>
         /// <returns>Retorna todas as categorias criadas ou um erro de validação.</returns>
-        [HttpGet]
+        [HttpPut]
         [Route("/getAllCategories")]
-        public async Task<IActionResult> GetAllCategoriesAsync()
+        public async Task<IActionResult> GetAllCategoriesAsync([FromBody] GetAllEntitiesRequest Request)
         {
-            BaseResponse<List<Category>> retorno = await Handler.GetAllCategoryAsync();
+            PagedResponse<List<Category>> retorno = await Handler.GetAllCategoryAsync(Request);
 
             if (retorno != null)
                 return Ok(retorno);

@@ -14,7 +14,7 @@ public class CategoryHandler : GenericHandler<Category>, ICategoryHandler
     {
     }
 
-    public async Task<BaseResponse<Category>> CreateCategoryAsync(CreateCategoryRequest request)
+    public async Task<BaseResponse<Category?>> CreateCategoryAsync(CreateCategoryRequest request)
     {
         try
         {
@@ -28,18 +28,18 @@ public class CategoryHandler : GenericHandler<Category>, ICategoryHandler
             await _dbSet.AddAsync(category);
             await _context.SaveChangesAsync();
 
-            return new BaseResponse<Category>(category);
+            return new BaseResponse<Category?>(category);
         }
-        catch (DbUpdateException ex)
+        catch (DbUpdateException)
         {
             //serilog
             throw;
         }
     }
 
-    public async Task<BaseResponse<Category>> UpdateCategoryAsync(UpdateCategoryRequest request)
+    public async Task<BaseResponse<Category?>> UpdateCategoryAsync(UpdateCategoryRequest request)
     {
-        Category? categoria = await _dbSet.AsNoTracking().Where(x => x.Id == request.Id && x.Active == true).FirstOrDefaultAsync();
+        Category? categoria = await _dbSet.Where(x => x.Id == request.Id && x.Active && x.UserId == request.UserId).FirstOrDefaultAsync();
 
         if (categoria != null)
         {
@@ -54,11 +54,11 @@ public class CategoryHandler : GenericHandler<Category>, ICategoryHandler
             _dbSet.Update(categoria);
             await _context.SaveChangesAsync();
 
-            return new BaseResponse<Category>(categoria);
+            return new BaseResponse<Category?>(categoria);
         }
         else
         {
-            throw new NullReferenceException("Id not found");
+            return new BaseResponse<Category?>(null, "Couldn't make the update", 500);
         }
     }
 
