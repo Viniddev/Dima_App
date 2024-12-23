@@ -1,10 +1,7 @@
 using Dima.Api.Data;
+using Dima.Api.Endpoints;
 using Dima.Api.Handlers;
 using Dima.Core.Handlers;
-using Dima.Core.Models;
-using Dima.Core.Request.Categories;
-using Dima.Core.Response;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,15 +31,11 @@ builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(connectionString
 //--------------------------------------------------------------//
 
 var app = builder.Build();
-
-app.MapPost(
-    "/v1/categories",
-    ([FromBody] CreateCategoryRequest Request, ICategoryHandler Handler) => Handler.CreateCategoryAsync(Request))
-    .WithName("/v1/categories")
-    .WithSummary("Create a new category")
-    .Produces<BaseResponse<Category>>();
-
-
 app.UseSwagger();
 app.UseSwaggerUI();
+
+//mapeamento dos endpoints
+app.MapGet("/", () => new { message = "OK" });
+app.MapEndpoints();
+
 app.Run();

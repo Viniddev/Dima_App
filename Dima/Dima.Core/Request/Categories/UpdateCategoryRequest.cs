@@ -15,5 +15,7 @@ namespace Dima.Core.Request.Categories
 
         [Required(ErrorMessage = "Invalid Description")]
         public string Description { get; set; } = string.Empty;
+
+        public long Id { get; set; }
     }
 }

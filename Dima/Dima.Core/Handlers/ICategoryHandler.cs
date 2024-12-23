@@ -15,6 +15,6 @@ namespace Dima.Core.Handlers
         Task<BaseResponse<Category>> UpdateCategoryAsync(UpdateCategoryRequest request);
         Task<BaseResponse<Category>> DeleteCategoryAsync(DeleteCategoryRequest request);
         Task<BaseResponse<Category>> GetCategoryByIdAsync(long id);
-        Task<BaseResponse<List<Category>>> GetAllCategoryAsync();
+        Task<PagedResponse<List<Category>>> GetAllCategoryAsync(GetAllCategoriesRequest request);
     }
 }

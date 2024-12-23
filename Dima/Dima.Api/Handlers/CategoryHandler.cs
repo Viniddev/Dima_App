@@ -25,76 +25,88 @@ namespace Dima.Api.Handlers
 
                 return new BaseResponse<Category>(category);
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException)
             {
-                //serilog
-                throw;
+                return new BaseResponse<Category>(null, "Category not found", 500);
             }
         }
 
         public async Task<BaseResponse<Category>> GetCategoryByIdAsync(long id)
         {
-            Category? categoria = await context.Categories.AsNoTracking().Where(x => x.Id == id && x.Active == true).FirstOrDefaultAsync();
+            Category? category = await context.Categories.AsNoTracking().Where(x => x.Id == id && x.Active == true).FirstOrDefaultAsync();
 
-            if (categoria != null)
+            if (category != null)
             {
-                return new BaseResponse<Category>(categoria);
+                return new BaseResponse<Category>(category);
             }
             else
             {
-                throw new NullReferenceException("Id not found");
+                return new BaseResponse<Category>(null, "Category not found", 500);
             }
         }
 
         public async Task<BaseResponse<Category>> DeleteCategoryAsync(DeleteCategoryRequest request)
         {
-            Category? categoria = await context.Categories.AsNoTracking().Where(x => x.Id == request.Id && x.Active == true).FirstOrDefaultAsync();
+            Category? category = await context.Categories.Where(x => x.Id == request.Id && x.Active == true && x.UserId == request.UserId).FirstOrDefaultAsync();
 
-            if (categoria != null)
+            if (category != null)
             {
-                categoria.Active = false;
-                categoria.UpdateDate = DateTime.Now;
+                category.DisableEntity();
 
-                context.Categories.Update(categoria);
+                context.Categories.Update(category);
                 await context.SaveChangesAsync();
 
-                return new BaseResponse<Category>(categoria);
+                return new BaseResponse<Category>(category);
             }
             else
             {
-                throw new NullReferenceException("Id not found");
+                return new BaseResponse<Category>(null, "Could not delete the specified category", 500);
             }
         }
 
-        public async Task<BaseResponse<List<Category>>> GetAllCategoryAsync()
+        public async Task<PagedResponse<List<Category>>> GetAllCategoryAsync(GetAllCategoriesRequest request)
         {
-            List<Category> listCategories = context.Categories.AsNoTracking().Where(x => x.Active == true).ToList();
+            try
+            {
+                IQueryable<Category> query = context.Categories.AsNoTracking().Where(x => x.Active == true && x.UserId == request.UserId);
 
-            return new BaseResponse<List<Category>>(listCategories);
+                List<Category> listCategories = await query
+                    .Skip((request.PageNumber - 1) * request.PageSize)
+                    .Take(request.PageSize)
+                    .ToListAsync();
+
+                int totalItems = await query.CountAsync();
+
+                return new PagedResponse<List<Category>>(listCategories, totalItems, request.PageSize, request.PageNumber);
+            }
+            catch (Exception) 
+            {
+                return new PagedResponse<List<Category>>(null, 500, "Couldn't find any item or a bad request happened");
+            }
         }
 
         public async Task<BaseResponse<Category>> UpdateCategoryAsync(UpdateCategoryRequest request)
         {
-            Category? categoria = await context.Categories.AsNoTracking().Where(x => x.Id == request.Id && x.Active == true).FirstOrDefaultAsync();
+            Category? category = await context.Categories.Where(x => x.Id == request.Id && x.Active == true && x.UserId == request.UserId).FirstOrDefaultAsync();
 
-            if (categoria != null)
+            if (category != null)
             {
-                categoria.UpdateDate = DateTime.Now;
+                category.UpdateValues();
 
                 if (!string.IsNullOrEmpty(request.Description))
-                    categoria.Description = request.Description;
+                    category.Description = request.Description;
 
                 if (!string.IsNullOrEmpty(request.Title))
-                    categoria.Title = request.Title;
+                    category.Title = request.Title;
 
-                context.Categories.Update(categoria);
+                context.Categories.Update(category);
                 await context.SaveChangesAsync();
 
-                return new BaseResponse<Category>(categoria);
+                return new BaseResponse<Category>(category);
             }
             else
             {
-                throw new NullReferenceException("Id not found");
+                return new BaseResponse<Category>(null, "Category couldn't be updated", 500);
             }
         }
     }
