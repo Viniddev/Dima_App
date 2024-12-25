@@ -1,6 +1,7 @@
 ﻿using Dima.Api.Common.Api;
 using Dima.Core.Handlers;
 using Dima.Core.Models;
+using Dima.Core.Request.Categories;
 using Dima.Core.Response;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,9 +17,15 @@ namespace Dima.Api.Endpoints.Categories
             .Produces<BaseResponse<Category?>>()
             .WithOrder(4);
 
-        private static async Task<IResult> HandleAsync(ICategoryHandler handler, [FromQuery] long id)
+        private static async Task<IResult> HandleAsync(ICategoryHandler handler, long Id)
         {
-            var result = await handler.GetCategoryByIdAsync(id);
+            var request = new GetCategoryByIdRequest() 
+            {
+                UserId = "vini@123",
+                Id = Id,
+            };
+
+            var result = await handler.GetCategoryByIdAsync(request);
             if (result.IsSuccess) 
             {
                 return Results.Ok(result.Data);

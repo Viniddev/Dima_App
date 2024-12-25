@@ -22,6 +22,7 @@ builder.Services.AddSwaggerGen(x =>
 });
 
 builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
+builder.Services.AddTransient<ITransactionHandler, TransactionHandler>();
 
 //transient ->
 //   sempre cria uma nova instancia do category independente de quantas vezes eu chame os metodos em uma mesma requisição

@@ -1,4 +1,5 @@
-﻿using Dima.Api.Data;
+﻿using Azure.Core;
+using Dima.Api.Data;
 using Dima.Core.Handlers;
 using Dima.Core.Models;
 using Dima.Core.Request.Categories;
@@ -25,38 +26,43 @@ namespace Dima.Api.Handlers
 
                 return new BaseResponse<Category>(category);
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
-                return new BaseResponse<Category>(null, "Category not found", 500);
+                return new BaseResponse<Category>(null, ex.Message.ToString(), 500);
             }
         }
 
-        public async Task<BaseResponse<Category>> GetCategoryByIdAsync(long id)
+        public async Task<BaseResponse<Category>> GetCategoryByIdAsync(GetCategoryByIdRequest request)
         {
-            Category? category = await context.Categories.AsNoTracking().Where(x => x.Id == id && x.Active == true).FirstOrDefaultAsync();
+            try
+            {
+                Category? category = await context.Categories.AsNoTracking().FirstAsync(x => x.Id == request.Id && x.Active && x.UserId == request.UserId);
 
-            if (category != null)
-            {
-                return new BaseResponse<Category>(category);
+                if (category != null)
+                {
+                    return new BaseResponse<Category>(category);
+                }
+
+                return new BaseResponse<Category>(null, "couldn't ind any category with this id", 500);
             }
-            else
+            catch (Exception ex)
             {
-                return new BaseResponse<Category>(null, "Category not found", 500);
+                return new BaseResponse<Category>(null, ex.Message.ToString(), 400);
             }
         }
 
         public async Task<BaseResponse<Category>> DeleteCategoryAsync(DeleteCategoryRequest request)
         {
-            Category? category = await context.Categories.Where(x => x.Id == request.Id && x.Active == true && x.UserId == request.UserId).FirstOrDefaultAsync();
+            BaseResponse<Category> category = await GetCategoryByIdAsync(new GetCategoryByIdRequest() { Id = request.Id , UserId = request.UserId});
 
-            if (category != null)
+            if (category.Data != null)
             {
-                category.DisableEntity();
+                category.Data.DisableEntity();
 
-                context.Categories.Update(category);
+                context.Categories.Update(category.Data);
                 await context.SaveChangesAsync();
 
-                return new BaseResponse<Category>(category);
+                return new BaseResponse<Category>(category.Data);
             }
             else
             {
@@ -87,22 +93,22 @@ namespace Dima.Api.Handlers
 
         public async Task<BaseResponse<Category>> UpdateCategoryAsync(UpdateCategoryRequest request)
         {
-            Category? category = await context.Categories.Where(x => x.Id == request.Id && x.Active == true && x.UserId == request.UserId).FirstOrDefaultAsync();
+            BaseResponse<Category> category = await GetCategoryByIdAsync(new GetCategoryByIdRequest() { Id = request.Id, UserId = request.UserId });
 
-            if (category != null)
+            if (category.Data != null)
             {
-                category.UpdateValues();
+                category.Data.UpdateValues();
 
                 if (!string.IsNullOrEmpty(request.Description))
-                    category.Description = request.Description;
+                    category.Data.Description = request.Description;
 
                 if (!string.IsNullOrEmpty(request.Title))
-                    category.Title = request.Title;
+                    category.Data.Title = request.Title;
 
-                context.Categories.Update(category);
+                context.Categories.Update(category.Data);
                 await context.SaveChangesAsync();
 
-                return new BaseResponse<Category>(category);
+                return new BaseResponse<Category>(category.Data);
             }
             else
             {
