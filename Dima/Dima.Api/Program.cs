@@ -11,7 +11,16 @@ builder.Services.AddEndpointsApiExplorer();
 //quando estiver lidando com entidades ou classes que estejam sendo recebidas
 //por parametro e que tem o mesmo nome
 
-builder.Services.AddSwaggerGen(x => x.CustomSchemaIds(n => n.FullName));
+builder.Services.AddSwaggerGen(x => 
+{
+    x.CustomSchemaIds(n => n.FullName);
+    x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Dima.Api",
+        Version = "v1"
+    });
+});
+
 builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
 
 //transient ->
@@ -31,10 +40,11 @@ builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(connectionString
 //--------------------------------------------------------------//
 
 var app = builder.Build();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
-//mapeamento dos endpoints
+builder.Services.AddEndpointsApiExplorer();
 app.MapGet("/", () => new { message = "OK" });
 app.MapEndpoints();
 
