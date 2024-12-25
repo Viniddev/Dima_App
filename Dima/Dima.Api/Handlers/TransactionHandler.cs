@@ -68,7 +68,6 @@ namespace Dima.Api.Handlers
             {
                 return new PagedResponse<List<Transaction?>>(null, 500, ex.Message.ToString());
             }
-
         }
 
         public async Task<BaseResponse<Transaction?>> GetTransactionById(GetTransactionByIdRequest request)
@@ -89,6 +88,31 @@ namespace Dima.Api.Handlers
                 return new BaseResponse<Transaction?>(null, ex.Message.ToString(), 400);
             }
 
+        }
+
+        public async Task<PagedResponse<List<Transaction?>>> GetTransactionsByPeriod(GetTransactionsByPeriodRequest request)
+        {
+            try
+            {
+                if(request.StartDate > request.EndDate)
+                    return new PagedResponse<List<Transaction?>>(null, 500, "Start date could not be bigger than end date");
+
+                IQueryable<Transaction?> transactions = context.Transactions.Where(x => x.Active && x.UserId == request.UserId && (x.CreationDate >= request.StartDate && x.CreationDate <= request.EndDate));
+
+                int total = await transactions.CountAsync();
+
+                List<Transaction?> result = await transactions
+                    .Skip((request.PageNumber - 1) * request.PageSize)
+                    .Take(request.PageSize)
+                    .OrderByDescending(x => x.CreationDate)
+                    .ToListAsync();
+
+                return new PagedResponse<List<Transaction?>>(result, total, request.PageSize, request.PageNumber);
+            }
+            catch (Exception ex)
+            {
+                return new PagedResponse<List<Transaction?>>(null, 500, ex.Message.ToString());
+            }
         }
 
         public async Task<BaseResponse<Transaction?>> UpdateTransaction(UpdateTransactionRequest request)

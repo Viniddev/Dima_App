@@ -12,5 +12,6 @@ namespace Dima.Core.Handlers
         Task<BaseResponse<Transaction?>> CreateTransaction(CreateTransactionRequest request);
         Task<BaseResponse<Transaction?>> UpdateTransaction(UpdateTransactionRequest request);
         Task<BaseResponse<Transaction?>> DeleteTransaction(DeleteTransactionRequest request);
+        Task<PagedResponse<List<Transaction?>>> GetTransactionsByPeriod(GetTransactionsByPeriodRequest request);
     }
 }
