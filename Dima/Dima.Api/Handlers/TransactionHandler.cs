@@ -1,4 +1,5 @@
 ﻿using Dima.Api.Data;
+using Dima.Core.Common.Extensions;
 using Dima.Core.Handlers;
 using Dima.Core.Models;
 using Dima.Core.Request.Transactions;
@@ -58,6 +59,7 @@ namespace Dima.Api.Handlers
                 int total = await transactions.CountAsync();
 
                 List<Transaction?> result = await transactions
+                    .OrderByDescending(x => x.CreationDate)
                     .Skip((request.PageNumber - 1) * request.PageSize)
                     .Take(request.PageSize)
                     .ToListAsync();
@@ -94,7 +96,13 @@ namespace Dima.Api.Handlers
         {
             try
             {
-                if(request.StartDate > request.EndDate)
+                //extendemos o objeto async pra criar os metodos abaixo;
+                //??= verifica se é nulo, se for, recebe o retorno dos metodos;
+                request.StartDate ??= DateTime.Now.GetFirstDay();
+                request.EndDate ??= DateTime.Now.GetLastDay();
+
+
+                if (request.StartDate > request.EndDate)
                     return new PagedResponse<List<Transaction?>>(null, 500, "Start date could not be bigger than end date");
 
                 IQueryable<Transaction?> transactions = context.Transactions.Where(x => x.Active && x.UserId == request.UserId && (x.CreationDate >= request.StartDate && x.CreationDate <= request.EndDate));
@@ -102,9 +110,9 @@ namespace Dima.Api.Handlers
                 int total = await transactions.CountAsync();
 
                 List<Transaction?> result = await transactions
+                    .OrderByDescending(x => x.CreationDate)
                     .Skip((request.PageNumber - 1) * request.PageSize)
                     .Take(request.PageSize)
-                    .OrderByDescending(x => x.CreationDate)
                     .ToListAsync();
 
                 return new PagedResponse<List<Transaction?>>(result, total, request.PageSize, request.PageNumber);

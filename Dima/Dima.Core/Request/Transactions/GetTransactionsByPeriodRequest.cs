@@ -10,11 +10,8 @@ namespace Dima.Core.Request.Transactions
 {
     public class GetTransactionsByPeriodRequest : PagedRequest
     {
-        [Required(ErrorMessage = "Required")]
-        public DateTime StartDate { get; set; }
-
-        [Required(ErrorMessage = "Required")]
-        public DateTime EndDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 }
 

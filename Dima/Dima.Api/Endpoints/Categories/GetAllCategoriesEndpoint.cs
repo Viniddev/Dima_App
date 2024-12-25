@@ -22,10 +22,10 @@ namespace Dima.Api.Endpoints.Categories
             var result = await handler.GetAllCategoryAsync(request);
             if (result.IsSuccess) 
             {
-                return Results.Ok(result.Data);
+                return Results.Ok(result);
             }
             
-            return Results.BadRequest(result.Data);
+            return Results.BadRequest(result);
         }
     }
 }

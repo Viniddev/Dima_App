@@ -22,10 +22,10 @@ namespace Dima.Api.Endpoints.Transactions
             var result = await handler.UpdateTransaction(request);
             if (result.IsSuccess)
             {
-                return Results.Ok(result.Data);
+                return Results.Ok(result);
             }
 
-            return Results.BadRequest(result.Data);
+            return Results.BadRequest(result);
         }
     }
 }

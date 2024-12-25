@@ -21,17 +21,17 @@ namespace Dima.Api.Endpoints.Categories
         {
             var request = new GetCategoryByIdRequest() 
             {
-                UserId = "vini@123",
+                UserId = "Def",
                 Id = Id,
             };
 
             var result = await handler.GetCategoryByIdAsync(request);
             if (result.IsSuccess) 
             {
-                return Results.Ok(result.Data);
+                return Results.Ok(result);
             }
             
-            return Results.BadRequest(result.Data);
+            return Results.BadRequest(result);
         }
     }
 }

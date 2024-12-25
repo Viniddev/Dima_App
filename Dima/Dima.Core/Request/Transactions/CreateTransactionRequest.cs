@@ -16,11 +16,12 @@ namespace Dima.Core.Request.Transactions
 
         [Required(ErrorMessage = "Invalid Type")]
         public ETransactionType Type { get; set; }
-
+        [Required(ErrorMessage = "Invalid date")]
         public DateTime PaydOrRecivedAt { get; set; }
+        [Required(ErrorMessage = "Invalid amount")]
         public decimal Amount { get; set; }
 
-        [Required(ErrorMessage = "Required a valid Category Id")]
+        [Required(ErrorMessage = "Require a valid Category Id")]
         public long CategoryId { get; set; }
     }
 }
