@@ -11,10 +11,10 @@ namespace Dima.Core.Handlers
 {
     public interface ICategoryHandler  // multiple implementations
     {
-        Task<BaseResponse<Category>> CreateCategoryAsync(CreateCategoryRequest request);
-        Task<BaseResponse<Category>> UpdateCategoryAsync(UpdateCategoryRequest request);
-        Task<BaseResponse<Category>> DeleteCategoryAsync(DeleteCategoryRequest request);
-        Task<BaseResponse<Category>> GetCategoryByIdAsync(GetCategoryByIdRequest request);
-        Task<PagedResponse<List<Category>>> GetAllCategoryAsync(GetAllCategoriesRequest request);
+        Task<BaseResponse<Category?>> CreateCategoryAsync(CreateCategoryRequest request);
+        Task<BaseResponse<Category?>> UpdateCategoryAsync(UpdateCategoryRequest request);
+        Task<BaseResponse<Category?>> DeleteCategoryAsync(DeleteCategoryRequest request);
+        Task<BaseResponse<Category?>> GetCategoryByIdAsync(GetCategoryByIdRequest request);
+        Task<PagedResponse<List<Category?>>> GetAllCategoryAsync(GetAllCategoriesRequest request);
     }
 }
