@@ -32,6 +32,13 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+//aqui identificamos o identity como dependencia
+builder.Services
+    .AddIdentityCore<AplicationUser>()
+    .AddRoles<IdentityRole<long>>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddApiEndpoints(); //pra que ja crie o api endpoint
+
 
 builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
 builder.Services.AddTransient<ITransactionHandler, TransactionHandler>();
@@ -54,11 +61,18 @@ builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(connectionString
 
 var app = builder.Build();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
 builder.Services.AddEndpointsApiExplorer();
 app.MapGet("/", () => new { message = "OK" });
 app.MapEndpoints();
+
+app.MapGroup("v1/Identity")
+    .WithTags("Identity")
+    .MapIdentityApi<AplicationUser>();
 
 app.Run();
