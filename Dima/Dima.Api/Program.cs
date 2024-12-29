@@ -1,7 +1,9 @@
 using Dima.Api.Data;
 using Dima.Api.Endpoints;
 using Dima.Api.Handlers;
+using Dima.Api.Models;
 using Dima.Core.Handlers;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,9 +31,6 @@ builder.Services
     .AddIdentityCookies();
 
 builder.Services.AddAuthorization();
-
-
-
 
 
 builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
