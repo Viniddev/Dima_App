@@ -24,6 +24,9 @@ Esse projeto está sendo desenvolvido durante o curso de desenvolvimento full st
 
 Este é um projeto de controle financeiro que visa a organização e o display de como gerenciar as rendas e os gastos.
 
+A princípio, estava desenvolvendo o projeto adicionando alguns toques pessoais, mas, à medida que o curso foi se desenvolvendo, percebi que me deparei com alguns pontos de incompatibilidade de versão que eu não conseguiria resolver em tempo hábil. Portanto, criei uma branch separada para que pudesse acompanhar as aulas (Classroom), enquanto a branch principal (Main) permaneceria com as modificações pessoais.
+
+A aplicação utiliza MudBlazor para a construção do Front-End, mas, futuramente, pretendo recriar uma versão utilizando Next.js com TypeScript.
 
 ## 🛠Pré-requisitos
 
