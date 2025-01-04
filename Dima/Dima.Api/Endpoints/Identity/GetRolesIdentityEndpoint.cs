@@ -7,12 +7,13 @@ namespace Dima.Api.Endpoints.Identity
     {
         public static void Map(IEndpointRouteBuilder app)
         => app.MapGet("/roles", Handle)
+            .WithOrder(2)
             .RequireAuthorization();
 
-        public async static Task<IResult> Handle(ClaimsPrincipal AuthenticatedUser) 
+        public static Task<IResult> Handle(ClaimsPrincipal AuthenticatedUser) 
         {
             if (AuthenticatedUser.Identity is null || !AuthenticatedUser.Identity.IsAuthenticated)
-                return Results.Unauthorized();
+                return Task.FromResult(Results.Unauthorized());
 
             var identity = (ClaimsIdentity)AuthenticatedUser.Identity;
             var roles = identity
@@ -26,7 +27,7 @@ namespace Dima.Api.Endpoints.Identity
                     c.ValueType
                 });
 
-            return TypedResults.Json(roles);
+            return Task.FromResult<IResult>(TypedResults.Json(roles));
         }
     }
 }

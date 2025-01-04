@@ -1,6 +1,8 @@
 ﻿using Dima.Api.Common.Api;
 using Dima.Api.Endpoints.Categories;
+using Dima.Api.Endpoints.Identity;
 using Dima.Api.Endpoints.Transactions;
+using Dima.Api.Models;
 
 namespace Dima.Api.Endpoints
 {
@@ -29,6 +31,16 @@ namespace Dima.Api.Endpoints
                 .MapEndpoint<GetAllTransactionsEndpoint>()
                 .MapEndpoint<GetTransactionByIdEndpoint>()
                 .MapEndpoint<GetTransactionsByPeriodEndpoint>();
+
+
+            //endpoints.MapGroup("v1/identity")
+            //    .WithTags("Identity")
+            //    .MapIdentityApi<AplicationUser>();
+
+            endpoints.MapGroup("v1/identity")
+                .WithTags("Identity")
+                .MapEndpoint<LogoutEndpoint>()
+                .MapEndpoint<GetRolesIdentityEndpoint>();
         }
 
         private static IEndpointRouteBuilder MapEndpoint<TEndpoint>(this IEndpointRouteBuilder app)

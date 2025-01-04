@@ -4,6 +4,7 @@ using Dima.Core.Models;
 using Dima.Core.Request.Categories;
 using Dima.Core.Response;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Dima.Api.Endpoints.Categories
 {
@@ -17,8 +18,9 @@ namespace Dima.Api.Endpoints.Categories
             .Produces<PagedResponse<List<Category?>>>()
             .WithOrder(3);
 
-        private static async Task<IResult> HandleAsync( ICategoryHandler handler, [FromBody] GetAllCategoriesRequest request) 
+        private static async Task<IResult> HandleAsync( ICategoryHandler handler, [FromBody] GetAllCategoriesRequest request, ClaimsPrincipal user) 
         {
+            request.UserId = user.Identity?.Name ?? string.Empty;
             var result = await handler.GetAllCategoryAsync(request);
             if (result.IsSuccess) 
             {

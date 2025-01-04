@@ -4,6 +4,7 @@ using Dima.Core.Models;
 using Dima.Core.Request.Transactions;
 using Dima.Core.Response;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Dima.Api.Endpoints.Transactions
 {
@@ -17,8 +18,9 @@ namespace Dima.Api.Endpoints.Transactions
             .Produces<PagedResponse<List<Transaction?>>>()
             .WithOrder(6);
 
-        private static async Task<IResult> HandleAsync(ITransactionHandler handler, [FromBody] GetTransactionsByPeriodRequest request)
+        private static async Task<IResult> HandleAsync(ITransactionHandler handler, [FromBody] GetTransactionsByPeriodRequest request, ClaimsPrincipal user)
         {
+            request.UserId = user.Identity?.Name ?? string.Empty;
             var result = await handler.GetTransactionsByPeriod(request);
             if (result.IsSuccess)
             {
