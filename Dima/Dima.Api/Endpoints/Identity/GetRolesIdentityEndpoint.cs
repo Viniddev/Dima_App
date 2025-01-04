@@ -7,7 +7,6 @@ namespace Dima.Api.Endpoints.Identity
     {
         public static void Map(IEndpointRouteBuilder app)
         => app.MapGet("/roles", Handle)
-            .WithOrder(2)
             .RequireAuthorization();
 
         public static Task<IResult> Handle(ClaimsPrincipal AuthenticatedUser) 

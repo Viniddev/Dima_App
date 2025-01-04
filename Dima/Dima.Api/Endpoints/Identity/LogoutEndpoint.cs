@@ -12,7 +12,6 @@ namespace Dima.Api.Endpoints.Identity
             .WithName("logout")
             .WithDescription("use logout to the current logged user")
             .WithSummary("use logout to the current logged user")
-            .WithOrder(1)
             .RequireAuthorization();
 
         public static async Task<IResult> Handler(SignInManager<AplicationUser> signInManeger) 

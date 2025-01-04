@@ -32,15 +32,14 @@ namespace Dima.Api.Endpoints
                 .MapEndpoint<GetTransactionByIdEndpoint>()
                 .MapEndpoint<GetTransactionsByPeriodEndpoint>();
 
-
-            //endpoints.MapGroup("v1/identity")
-            //    .WithTags("Identity")
-            //    .MapIdentityApi<AplicationUser>();
-
             endpoints.MapGroup("v1/identity")
                 .WithTags("Identity")
                 .MapEndpoint<LogoutEndpoint>()
                 .MapEndpoint<GetRolesIdentityEndpoint>();
+
+            endpoints.MapGroup("/")
+                .WithTags("Health Check")
+                .MapGet("/", () => new { message = "OK" });
         }
 
         private static IEndpointRouteBuilder MapEndpoint<TEndpoint>(this IEndpointRouteBuilder app)
