@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Dima.WebApp;
 using MudBlazor.Services;
+using System.ComponentModel.DataAnnotations;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
