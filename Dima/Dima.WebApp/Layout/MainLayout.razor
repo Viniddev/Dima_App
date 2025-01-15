@@ -1,19 +1,51 @@
 ﻿@inherits LayoutComponentBase
 
 @* Required *@
-<MudThemeProvider Theme="Configuration.theme" />
+<MudThemeProvider @bind-IsDarkMode="_isDarkMode" @ref="_mudThemeProvider" Theme="Configuration.theme" />
 <MudPopoverProvider />
-
-@* Needed for dialogs *@
 <MudDialogProvider />
-
-@* Needed for snackbars *@
 <MudSnackbarProvider />
 
-<div class="page">
-	<main>
-		<article class="content px-4">
+<MudLayout>
+	<MudAppBar>
+		Dima
+		<MudSpacer/>
+		<MudSwitch @bind-Value="_isDarkMode" />
+	</MudAppBar>
+	<MudMainContent>
+		<MudContainer>
 			@Body
-		</article>
-	</main>
-</div>
+		</MudContainer>
+	</MudMainContent>
+</MudLayout>
+
+
+@code
+{
+	private bool _isDarkMode = false;
+	private MudThemeProvider _mudThemeProvider = null!;
+
+	//esse metodo é executado sempre que o projeto é renderizado
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		//se for a primeira execução, pegamos as preferencias do sistema
+		//em seguida utilizamos essa tratativa WatchSystemPreference pra 
+		//ajustar o nosso tema
+
+		if (firstRender) 
+		{
+			_isDarkMode = await _mudThemeProvider.GetSystemPreference();
+			await _mudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
+			//esse comando afirma ao sistema que o estado mudou e com isso ele 
+			//atualiza a tela
+			StateHasChanged();
+		}
+	}
+
+	private Task OnSystemPreferenceChanged(bool NewValue) 
+	{
+		_isDarkMode = NewValue;
+		StateHasChanged();
+		return Task.CompletedTask;
+	}
+}
